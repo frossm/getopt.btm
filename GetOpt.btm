@@ -1,0 +1,81 @@
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: GetOpt - Process command line options
+::
+:: This program scans the command line sent to it and sets various 
+:: environment variables that coorespond to the settings.
+::
+:: It sets an OPTION_arg variable for each arg on the command line.
+:: If a switch, the env var is set to 1.  If a value is give via an equals sign,
+:: it's set to that value.  Note, there can not be any white space around the '='
+::
+:: Use "If defined OPTION_arg" or "If %OPTION_arg eq value" to test for options
+::
+:: It also sets a parameter variable for each paramater entered.  PARAM_1 to PARAM_n
+:: PARAM_0 is a special value that contains the number of PARAMs.  Useful for looping
+:: through all of them.
+::
+:: In your batch file call getopt as  call GetOpt.btm %$
+:: I also recommend setting setlocal and endlocal in the host batch file so that
+:: the option variable do not stick around outside of the execution.
+::
+:: Example usage:  BatchFile.btm /a /b=22 /longopt Parm1 Parm2
+::   OPTION_a will equal 1.
+::   OPTION_b will equal 22
+::   OPTION_longopt will eqal 1.
+::   PARAM_1 will equal Parm1
+::   PARAM_2 will equal Parm2
+::   PARAM_0 will be set to the number of parms, so 2
+::
+:: To get debug messages, set DEBUG=1
+::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+:: Clean up the environment before we get going
+unset getopt* OPTION_* PARAM_*
+set getopt_ParmCounter=1
+
+if defined DEBUG echo Processing %# options:
+
+:: Loop through all command line arguments one at a time.
+for /L %i in (1,1,%#) do (
+	if defined DEBUG echo.
+	if defined DEBUG echo Parm Loop # %i:  %[%i]
+
+	:: If first character starts with a - or / it must be an option
+	iff %@instr[0,1,%[%i]] == - .or. %@instr[0,1,%[%i]] == / then
+		set getopt_Parm=%[%i]
+		if defined DEBUG echo  Parm "%getopt_Parm" is an option.
+
+		:: Set the Equal Index to the position of the equal sign.  0 means none was found
+		set getopt_EqIdx=%@index[%getopt_Parm,=]
+		if defined DEBUG .AND. %getopt_EqIdx GE 0 echo  Found equal sign @ index "%getopt_EqIdx"
+
+		:: If the index is GE 0 then we must have an equal in the option.  So find it then 
+		:: set the OPTION value to the stuff to the right of the equal sign
+		iff %getopt_EqIdx ge 0 then
+			set getopt_ParmValue=%@right[%@eval[-%getopt_EqIdx-1],%getopt_Parm]
+			if defined DEBUG echo  Parmvalue = "%getopt_ParmValue"
+			set getopt_ParmName=%@instr[2, %@eval[%getopt_EqIdx -1] , %getopt_Parm]
+			if defined DEBUG echo  ParmName is "%getopt_ParmName"
+			set OPTION_%getopt_ParmName=%getopt_ParmValue
+		else
+			:: This is a flag, so simply set the value to 1
+			if defined DEBUG echo  No equal sign found in %getopt_Parm.
+			set getopt_ParmName=%@right[%@eval[%@len[%getopt_Parm]-1],%getopt_Parm]
+			set getopt_ParmValue=1
+			if defined DEBUG echo  ParmName is "%getopt_ParmName"
+			set OPTION_%getopt_ParmName=%getopt_ParmValue
+		endiff
+		if defined DEBUG echo  Setting "OPTION_%getopt_ParmName=%getopt_ParmValue"
+	else
+		:: There was no / or - found, therefore this must be a paramater, not an option
+		if defined DEBUG echo  "%[%i]" is a parameter, not an option
+		set PARAM_%getopt_ParmCounter=%[%i]
+		set PARAM_0=%getopt_ParmCounter
+		if defined DEBUG echo  Setting "PARAM_%getopt_ParmCounter = %[%i]"
+		if defined DEBUG echo  Updating Number of Parms.  PARAM_0=%PARAM_0
+		set getopt_ParmCounter=%@Eval[getopt_ParmCounter + 1]
+	endiff
+)
+:: Perform any cleanup necessary
+unset getopt_* 
