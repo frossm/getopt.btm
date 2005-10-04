@@ -14,25 +14,27 @@
 ::
 :: Use "If defined OPTION_arg" or "If %OPTION_arg eq value" to test for options
 ::
-:: It also sets a parameter variable for each paramater entered.  PARAM_1 to PARAM_n
+:: It also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n
 :: PARAM_0 is a special value that contains the number of PARAMs.  Useful for looping
-:: through all of them.
+:: through all of them.  For example, do i = 1 to %PARAM_0 by 1 ...
 ::
 :: In your batch file call getopt as:
 ::		call GetOpt.btm %$
 ::
 :: I also recommend setting setlocal and endlocal in the host batch file so that
-:: the option variable do not stick around outside of the execution.
+:: the option / param variable do not stick around after the host batch files exits.
 ::
-:: Example usage:  BatchFile.btm /a /b=22 /longopt Parm1 Parm2
+:: Example usage:  BatchFile.btm /a /b=22 /longopt Parm1 Parm2 /quotedArg="long quoted arg"
 ::   OPTION_a will equal 1.
 ::   OPTION_b will equal 22
+::   OPTION_quotedArg will equal "long quoted arg"
 ::   OPTION_longopt will eqal 1.
 ::   PARAM_1 will equal Parm1
 ::   PARAM_2 will equal Parm2
 ::   PARAM_0 will be set to the number of parms, so 2 in this case
 ::
-:: To get debug messages, set DEBUG=1
+:: To get debug messages, set DEBUG=1.  This will give detailed information for each
+:: parameter on the command line as getopt loops through the list.
 ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -40,7 +42,8 @@
 unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
 
-if defined DEBUG echo Processing %# options:
+:: If in debug mode, kick off the display by showing the number of arguments
+if defined DEBUG echo GetOpt is processing %# arguments:
 
 :: Loop through all command line arguments one at a time.
 for /L %i in (1,1,%#) do (
@@ -90,3 +93,5 @@ for /L %i in (1,1,%#) do (
 
 :: Perform any cleanup necessary
 unset getopt_* 
+if defined DEBUG echo.
+if defined DEBUG echo GetOpt has completed processing %# arguments.  Ending Execution.
