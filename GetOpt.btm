@@ -47,8 +47,7 @@ if defined DEBUG echo GetOpt is processing %# arguments:
 
 :: Loop through all command line arguments one at a time.
 for /L %i in (1,1,%#) do (
-	if defined DEBUG echo.
-	if defined DEBUG echo Loop # %i:  %[%i]
+	if defined DEBUG (echo. %+ echo Scan #%i:)
 
 	:: If first character starts with a - or / it must be an option
 	iff %@instr[0,1,%[%i]] == - .or. %@instr[0,1,%[%i]] == / then
@@ -59,35 +58,35 @@ for /L %i in (1,1,%#) do (
 		set getopt_EqIdx=%@index[%getopt_Parm,=]
 
 		:: Display the index position of the equal sign
-		if defined DEBUG .AND. %getopt_EqIdx GE 0 echo  - Found equal sign @ index "%getopt_EqIdx"
+		if defined DEBUG .AND. %getopt_EqIdx GE 0 echo  - Found equal sign at index position "%getopt_EqIdx"
 
 		:: If the index is GE 0 then we must have an equal in the option.
 		:: set the OPTION value to the stuff to the right of the equal sign
 		iff %getopt_EqIdx ge 0 then
+			set getopt_ParmName=%@instr[2, %@eval[%getopt_EqIdx -1] , %getopt_Parm]
+			if defined DEBUG echo  - ParmName  = "%getopt_ParmName"
 			set getopt_ParmValue=%@right[%@eval[-%getopt_EqIdx-1],%getopt_Parm]
 			if defined DEBUG echo  - Parmvalue = "%getopt_ParmValue"
-			set getopt_ParmName=%@instr[2, %@eval[%getopt_EqIdx -1] , %getopt_Parm]
-			if defined DEBUG echo  - ParmName is "%getopt_ParmName"
 			set OPTION_%getopt_ParmName=%getopt_ParmValue
 		else
 			:: This is a flag, so simply set the value to 1
-			if defined DEBUG echo  - No equal sign found in %getopt_Parm.
+			if defined DEBUG echo  - No equal sign found in "%getopt_Parm"
 			set getopt_ParmName=%@right[%@eval[%@len[%getopt_Parm]-1],%getopt_Parm]
 			set getopt_ParmValue=1
-			if defined DEBUG echo  - ParmName is "%getopt_ParmName"
+			if defined DEBUG echo  - ParmName = "%getopt_ParmName"
 			set OPTION_%getopt_ParmName=%getopt_ParmValue
 		endiff
 
 		:: Regardless if there was a value or not, display what is going to occur
-		if defined DEBUG echo  - Setting "OPTION_%getopt_ParmName=%getopt_ParmValue"
+		if defined DEBUG echo  - Setting Variable OPTION_%getopt_ParmName=%getopt_ParmValue
 	else
 		:: There was no / or - found, therefore this must be a paramater, not an option
 		if defined DEBUG echo  - "%[%i]" is a parameter, not an option
 		set PARAM_%getopt_ParmCounter=%[%i]
 		set PARAM_0=%getopt_ParmCounter
-		if defined DEBUG echo  - Setting "PARAM_%getopt_ParmCounter = %[%i]"
 		set getopt_ParmCounter=%@Inc[%getopt_ParmCounter]
 		if defined DEBUG echo  - Updating Number of Parms.  PARAM_0=%PARAM_0
+		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter = %[%i]
 	endiff
 )
 
