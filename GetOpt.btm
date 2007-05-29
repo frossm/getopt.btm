@@ -9,8 +9,8 @@
 :: environment variables that coorespond to the settings.
 ::
 :: It sets an OPTION_arg variable for each arg on the command line.
-:: If a switch, the env var is set to 1.  If a value is given via an equals sign,
-:: it's set to that value.  Note, there can not be any white space around the '='
+:: If a switch, the env var is set to 1.  If a value is given via the colon sign,
+:: it's set to that value.  Note, there can not be any white space around the ':'
 ::
 :: Use "If defined OPTION_arg" or "If %OPTION_arg eq value" to test for options
 ::
@@ -24,7 +24,7 @@
 :: I also recommend setting setlocal and endlocal in the host batch file so that
 :: the option / param variable do not stick around after the host batch files exits.
 ::
-:: Example usage:  BatchFile.btm /a /b=22 /longopt Parm1 Parm2 /quotedArg="long quoted arg"
+:: Example usage:  BatchFile.btm /a /b:22 /longopt Parm1 Parm2 /quotedArg:"long quoted arg"
 ::   OPTION_a will equal 1.
 ::   OPTION_b will equal 22
 ::   OPTION_quotedArg will equal "long quoted arg"
@@ -54,14 +54,14 @@ for /L %i in (1,1,%#) do (
 		set getopt_Parm=%[%i]
 		if defined DEBUG echo  - Item "%getopt_Parm" is an option.
 
-		:: Set the Equal Index to the position of the equal sign.  0 means none was found
-		set getopt_EqIdx=%@index[%getopt_Parm,=]
+		:: Set the Equal Index to the position of the colon.  0 means none was found
+		set getopt_EqIdx=%@index[%getopt_Parm,:]
 
-		:: Display the index position of the equal sign
-		if defined DEBUG .AND. %getopt_EqIdx GE 0 echo  - Found equal sign at index position "%getopt_EqIdx"
+		:: Display the index position of the colon
+		if defined DEBUG .AND. %getopt_EqIdx GE 0 echo  - Found colon at index position "%getopt_EqIdx"
 
-		:: If the index is GE 0 then we must have an equal in the option.
-		:: set the OPTION value to the stuff to the right of the equal sign
+		:: If the index is GE 0 then we must have a colon in the option.
+		:: set the OPTION value to the stuff to the right of the colon
 		iff %getopt_EqIdx ge 0 then
 			set getopt_ParmName=%@instr[2, %@Dec[%getopt_EqIdx] , %getopt_Parm]
 			if defined DEBUG echo  - ParmName  = "%getopt_ParmName"
@@ -70,7 +70,7 @@ for /L %i in (1,1,%#) do (
 			set OPTION_%getopt_ParmName=%getopt_ParmValue
 		else
 			:: This is a flag, so simply set the value to 1
-			if defined DEBUG echo  - No equal sign found in "%getopt_Parm"
+			if defined DEBUG echo  - No colon found in "%getopt_Parm"
 			set getopt_ParmName=%@right[%@Dec[%@len[%getopt_Parm]],%getopt_Parm]
 			set getopt_ParmValue=1
 			if defined DEBUG echo  - ParmName = "%getopt_ParmName"
@@ -90,7 +90,11 @@ for /L %i in (1,1,%#) do (
 	endiff
 )
 
-:: Perform any cleanup necessary
-unset getopt_* 
+:: Display additional information
+if defined DEBUG echo.
+if defined DEBUG echo There were %PARAM_0 parameters found:  PARAM_0=%PARAM_0
 if defined DEBUG echo.
 if defined DEBUG echo GetOpt has completed processing %# arguments.  Ending Execution.
+
+:: Perform cleanup
+unset getopt_* 
