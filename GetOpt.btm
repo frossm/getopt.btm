@@ -91,10 +91,12 @@ for /L %i in (1,1,%#) do (
 )
 
 :: Display additional information
-if defined DEBUG echo.
-if defined DEBUG echo There were %PARAM_0 parameters found:  PARAM_0=%PARAM_0
-if defined DEBUG echo.
-if defined DEBUG echo GetOpt has completed processing %# arguments.  Ending Execution.
+iff defined DEBUG then
+	echo.
+	echo There were %PARAM_0 parameters found.  Setting PARAM_0=%PARAM_0
+	echo.
+	echo GetOpt has completed processing %# arguments.  Ending Execution.
+endiff
 
 :: Perform cleanup
 unset getopt_* 
