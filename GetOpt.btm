@@ -53,7 +53,7 @@ set getopt_ParmCounter=1
 if defined DEBUG echo GetOpt is processing %# arguments:
 
 :: Loop through all command line arguments one at a time.
-for /L %i in (1,1,%#) do (
+do i = 1 to %#
 	if defined DEBUG (echo. %+ echo Scan #%i:)
 
 	:: If first character starts with a - or / it must be an option
@@ -97,7 +97,7 @@ for /L %i in (1,1,%#) do (
 		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter = %[%i]
 		set getopt_ParmCounter=%@Inc[%getopt_ParmCounter]
 	endiff
-)
+enddo
 
 :: Perform cleanup
 unset getopt_* 
