@@ -50,7 +50,10 @@ unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
 
 :: If in debug mode, kick off the display by showing the number of arguments
-if defined DEBUG echo GetOpt is processing %# arguments:
+iff defined DEBUG then
+	echo ---GetOpt Debug Messages Follow ----------------------------------------------
+	echo GetOpt is processing %# arguments:
+endiff
 
 :: Loop through all command line arguments one at a time.
 do i = 1 to %#
@@ -108,4 +111,5 @@ iff defined DEBUG then
 	echo There were %PARAM_0 parameters found.  Setting PARAM_0=%PARAM_0
 	echo.
 	echo GetOpt has completed processing %# arguments.  Ending Execution.
+	echo ---End GetOpt Debug Messages -------------------------------------------------
 endiff
