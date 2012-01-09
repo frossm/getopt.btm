@@ -1,29 +1,37 @@
 @echo off
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: GetOpt - Process command line options
-:: 
-:: Michael Fross
-:: michael@fross.org
-:: http://fross.org
+:: GetOpt - Process command line options                                  Michael Fross
+::                                                                    michael@fross.org
+::                                                                     http://fross.org
 ::
-:: This program scans the command line sent to it and sets various 
-:: environment variables that coorespond to the settings.
+:: Latest version can always be found at:  https://bitbucket.org/frossm/getopt.btm
 ::
-:: In your batch file call getopt as:
+:: This program scans the command line sent to it and sets various environment
+:: variables that coorespond to the settings.
+::
+:: In your batch file, call getopt at the top of your program.
 ::		call GetOpt.btm %$
 ::
-::The %$ sends the command line to the getopt function.  Use full path if needed
+:: The %$ sends the command line to this program function.  Use full path if needed.
 ::
-:: Options:
-:: It sets an OPTION_arg variable for each arg on the command line.
-:: If a switch, the env var is set to 1.  If a value is given via the colon sign,
+:: For command line OPTIONS:
+:: GetOpt sets an OPTION_arg variable for each arg on the command line.
+:: If it's a switch, the env var is set to 1.  If a value is given via the colon sign,
 :: it's set to that value.  Note, there can not be any white space around the ':'
+:: Also, only the "/" and "-" characters are recoginized as valid option prefixes.
 ::
-:: To test for a specific option, use "If defined OPTION_arg" or "If %OPTION_arg eq value" 
+:: For example, if you specify /a /b:squiggle   on the command line, then the following 
+:: environment variables will be set:
+::     Option_a will be set to 1
+::     Option_b will be set to squiggle
+::
+:: To test for a specific option in your program, use "if defined OPTION_arg" or 
+:: "if %OPTION_arg eq value" 
+::
 :: For example: getopt.btm -v filename
-:: "If defined OPTION_v echo Verbose is set"
+::   if defined OPTION_v echo Verbose is set
 :: 
-:: Parameters:
+:: For command line PARAMETERS:
 :: Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n
 :: PARAM_0 is a special value that contains the number of PARAMs.  Useful for looping
 :: through all of them.  For example, do i = 1 to %PARAM_0 by 1 ...
@@ -31,17 +39,21 @@
 :: I also recommend setting setlocal and endlocal in the host batch file so that
 :: the option / param variable do not stick around after the host batch files exits.
 ::
-:: Example usage:  BatchFile.btm /a /b:22 /longopt Parm1 Parm2 /quotedArg:"long quoted arg"
-::   %OPTION_a will equal 1.
-::   %OPTION_b will equal 22
-::   %OPTION_quotedArg will equal "long quoted arg"
-::   %OPTION_longopt will eqal 1.
-::   %PARAM_1 will equal Parm1
-::   %PARAM_2 will equal Parm2
+:: I think a larger example will explain things better:
+::
+:: Example usage:  
+::  BatchFile.btm /v /port:171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!"
+::   %OPTION_v will equal 1
+::   %OPTION_port will equal 171
+::   %PARAM_1 will equal Filename1.csv
+::   %OPTION_LongOpt will equal 1
+::   %PARAM_2 will equal OutputFileName
+::   %OPTION_x will equal "Hello There!"
 ::   %PARAM_0 will be set to the number of parms, so 2 in this case
 ::
-:: To get debug messages, set DEBUG=1.  This will give detailed information for each
-:: item on the command line as getopt loops through the list.
+:: If this is all a bit confusing, there is a robust DEBUG mode.  Set the environment
+:: variable DEBUG=1 to see a nice display of what's happening.  You can substitude
+:: the actual getopt.btm for "BatchFile.btm" above and directly see the results.
 ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -52,6 +64,10 @@ set getopt_ParmCounter=1
 :: If in debug mode, kick off the display by showing the number of arguments
 iff defined DEBUG then
 	echo ---GetOpt Debug Messages Follow ----------------------------------------------
+	echo.
+	echo Working with command line:
+	echo   %$
+	echo.
 	echo GetOpt is processing %# arguments:
 endiff
 
