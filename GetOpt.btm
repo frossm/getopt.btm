@@ -1,47 +1,63 @@
 @echo off
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: GetOpt - Process command line options                                  Michael Fross
-::                                                                    michael@fross.org
+:: Version 1.0                                                        michael@fross.org
 ::                                                                     http://fross.org
 ::
 :: Latest version can always be found at:  https://bitbucket.org/frossm/getopt.btm
 ::
 :: This program scans the command line sent to it and sets various environment
-:: variables that coorespond to the settings.
+:: variables that coorespond to the options and parameters provided.
 ::
-:: In your batch file, call getopt at the top of your program.
-::		call GetOpt.btm %$
+:: In your batch file, usually near the top, call getopt at the top of your program
+:: via the following:
 ::
-:: The %$ sends the command line to this program function.  Use full path if needed.
+::		call C:\Where\Ever\You\Put\It\GetOpt.btm %$
+::
+:: This executes the GetOpt batchfile and the %$ sends the command line to it.  If the directory
+:: it resides within is in the path, you most likely don't need the full path.
 ::
 :: For command line OPTIONS:
 :: GetOpt sets an OPTION_arg variable for each arg on the command line.
 :: If it's a switch, the env var is set to 1.  If a value is given via the colon sign,
-:: it's set to that value.  Note, there can not be any white space around the ':'
+:: it's set to that value.  
+::
+:: Note, there can not be any white space around the ':'
 :: Also, only the "/" and "-" characters are recoginized as valid option prefixes.
 ::
-:: For example, if you specify /a /b:squiggle   on the command line, then the following 
-:: environment variables will be set:
-::     Option_a will be set to 1
-::     Option_b will be set to squiggle
+:: For example, if you specify the switch   /a /b:squiggle  on the command line, then
+:: the following environment variables will be set:
+::   %Option_a will be set to 1
+::   %Option_b will be set to squiggle
 ::
 :: To test for a specific option in your program, use "if defined OPTION_arg" or 
 :: "if %OPTION_arg eq value" 
 ::
-:: For example: getopt.btm -v filename
-::   if defined OPTION_v echo Verbose is set
+:: For example: getopt.btm -a -b:squiggle
+::   if defined OPTION_a echo User entered the 'a' parameter
+::   if defined OPTION_b echo User set the 'b' parameter to be %OPTION_b
 :: 
 :: For command line PARAMETERS:
 :: Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n
 :: PARAM_0 is a special value that contains the number of PARAMs.  Useful for looping
 :: through all of them.  For example, do i = 1 to %PARAM_0 by 1 ...
 ::
+:: Parameter example:
+::   BatchFile.btm /a /b:squiggle filename1 filename2
+::
+::   %OPTION_a will be set to 1
+::   %OPTION_b will be set to squiggle
+::   %PARAM_0 will be set to 2
+::   %PARAM_1 will be set to filename1
+::   %PARAM_2 wil lbe set to filename2
+::
 :: I also recommend setting setlocal and endlocal in the host batch file so that
 :: the option / param variable do not stick around after the host batch files exits.
+:: The GetOpt script can't clean them up as they need to be available to your program.
 ::
 :: I think a larger example will explain things better:
 ::
-:: Example usage:  
+:: Extended example usage:  
 ::  BatchFile.btm /v /port:171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!"
 ::   %OPTION_v will equal 1
 ::   %OPTION_port will equal 171
@@ -52,18 +68,26 @@
 ::   %PARAM_0 will be set to the number of parms, so 2 in this case
 ::
 :: If this is all a bit confusing, there is a robust DEBUG mode.  Set the environment
-:: variable DEBUG=1 to see a nice display of what's happening.  You can substitude
-:: the actual getopt.btm for "BatchFile.btm" above and directly see the results.
+:: variable DEBUG=1 prior to running your batch file to see a nice display of what's
+:: happening.  You can even run GetOpt.btm direction with parameters and DEBUG on to see
+:: what's going on.  
+::
+:: Example:
+::   set DEBUG=1 %+ GetOpt.btm /v /port:171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!" %+ unset DEBUG
 ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-:: Clean up the environment before we get going
+:: Clean up the environment before we get going and get rid of old GetOpt variables
 unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
 
 :: If in debug mode, kick off the display by showing the number of arguments
 iff defined DEBUG then
 	echo ---GetOpt Debug Messages Follow ----------------------------------------------
+
+	:: Set the color of the output to RED.  This will show colored Debug statements
+	gosub SetColor Red
+
 	echo.
 	echo Working with command line:
 	echo   %$
@@ -127,5 +151,32 @@ iff defined DEBUG then
 	echo There were %PARAM_0 parameters found.  Setting PARAM_0=%PARAM_0
 	echo.
 	echo GetOpt has completed processing %# arguments.  Ending Execution.
+
+	:: Reset the color back to normal
+	gosub SetColor Normal
+
+	echo.
 	echo ---End GetOpt Debug Messages -------------------------------------------------
+	echo.
 endiff
+
+:: Return to calling program
+quit
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: Sets the color of the text
+:SetColor [Clr]
+	Switch %@Upper[%Clr]
+		Case YELLOW
+			echos ^e[33;1m
+		Case RED
+			echos ^e[31;1m
+		Case WHITE
+			echos ^e[37;1m
+		Case NORMAL
+			echos ^e[0m
+		Default
+			echo ** ERROR Setting Color.  Unknown Directive:  '%Clr' **
+	EndSwitch
+return
