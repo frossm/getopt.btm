@@ -137,7 +137,7 @@ do i = 1 to %#
 		set PARAM_%getopt_ParmCounter=%[%i]
 		set PARAM_0=%getopt_ParmCounter
 		if defined DEBUG echo  - Updating Number of Parms.  PARAM_0=%PARAM_0
-		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter = %[%i]
+		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter = "%[%i]"
 		set getopt_ParmCounter=%@Inc[%getopt_ParmCounter]
 	endiff
 enddo
