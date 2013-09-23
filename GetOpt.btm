@@ -86,7 +86,7 @@ iff defined DEBUG then
 	echo ---GetOpt Debug Messages Follow ----------------------------------------------
 
 	:: Set the color of the output to RED.  This will show colored Debug statements
-	gosub SetColor Red
+	call SetColor Red
 
 	echo.
 	echo Working with command line:
@@ -153,7 +153,7 @@ iff defined DEBUG then
 	echo GetOpt has completed processing %# arguments.  Ending Execution.
 
 	:: Reset the color back to normal
-	gosub SetColor Normal
+	call SetColor Normal
 
 	echo.
 	echo ---End GetOpt Debug Messages -------------------------------------------------
@@ -162,21 +162,3 @@ endiff
 
 :: Return to calling program
 quit
-
-
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Sets the color of the text
-:SetColor [Clr]
-	Switch %@Upper[%Clr]
-		Case YELLOW
-			echos ^e[33;1m
-		Case RED
-			echos ^e[31;1m
-		Case WHITE
-			echos ^e[37;1m
-		Case NORMAL
-			echos ^e[0m
-		Default
-			echo ** ERROR Setting Color.  Unknown Directive:  '%Clr' **
-	EndSwitch
-return
