@@ -148,7 +148,11 @@ unset getopt_*
 :: Display summary information
 iff defined DEBUG then
 	echo.
-	echo There were %PARAM_0 parameters found.  Setting PARAM_0=%PARAM_0
+	iff defined PARAM_0 then
+		echo There were %PARAM_0 parameters found.  Setting PARAM_0=%PARAM_0
+	else
+		echo There were no parameters found.  PARAM_0 has not been set.
+	endiff
 	echo.
 	echo GetOpt has completed processing %# arguments.  Ending Execution.
 
