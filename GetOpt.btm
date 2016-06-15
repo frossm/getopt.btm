@@ -1,128 +1,93 @@
 @echo off
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: GetOpt - Process command line options                                  Michael Fross
-:: Version 1.0                                                        michael@fross.org
+:: Version 2.0                                                        michael@fross.org
 ::                                                                     http://fross.org
-::
-:: Latest version can always be found at:  https://bitbucket.org/frossm/getopt.btm
-::
-:: This program scans the command line sent to it and sets various environment
-:: variables that coorespond to the options and parameters provided.
-::
-:: In your batch file, usually near the top, call getopt at the top of your program
-:: via the following:
-::
-::		call C:\Where\Ever\You\Put\It\GetOpt.btm %$
-::
-:: This executes the GetOpt batchfile and the %$ sends the command line to it.  If the directory
-:: it resides within is in the path, you most likely don't need the full path.
-::
-:: For command line OPTIONS:
-:: GetOpt sets an OPTION_arg variable for each arg on the command line.
-:: If it's a switch, the env var is set to 1.  If a value is given via the colon sign,
-:: it's set to that value.  
-::
-:: Note, there can not be any white space around the ':'
-:: Also, only the "/" and "-" characters are recoginized as valid option prefixes.
-::
-:: For example, if you specify the switch   /a /b:squiggle  on the command line, then
-:: the following environment variables will be set:
-::   %Option_a will be set to 1
-::   %Option_b will be set to squiggle
-::
-:: To test for a specific option in your program, use "if defined OPTION_arg" or 
-:: "if %OPTION_arg eq value" 
-::
-:: For example: getopt.btm -a -b:squiggle
-::   if defined OPTION_a echo User entered the 'a' parameter
-::   if defined OPTION_b echo User set the 'b' parameter to be %OPTION_b
-:: 
-:: For command line PARAMETERS:
-:: Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n
-:: PARAM_0 is a special value that contains the number of PARAMs.  Useful for looping
-:: through all of them.  For example, do i = 1 to %PARAM_0 by 1 ...
-::
-:: Parameter example:
-::   BatchFile.btm /a /b:squiggle filename1 filename2
-::
-::   %OPTION_a will be set to 1
-::   %OPTION_b will be set to squiggle
-::   %PARAM_0 will be set to 2
-::   %PARAM_1 will be set to filename1
-::   %PARAM_2 wil lbe set to filename2
-::
-:: I also recommend setting setlocal and endlocal in the host batch file so that
-:: the option / param variable do not stick around after the host batch files exits.
-:: The GetOpt script can't clean them up as they need to be available to your program.
-::
-:: I think a larger example will explain things better:
-::
-:: Extended example usage:  
-::  BatchFile.btm /v /port:171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!"
-::   %OPTION_v will equal 1
-::   %OPTION_port will equal 171
-::   %PARAM_1 will equal Filename1.csv
-::   %OPTION_LongOpt will equal 1
-::   %PARAM_2 will equal OutputFileName
-::   %OPTION_x will equal "Hello There!"
-::   %PARAM_0 will be set to the number of parms, so 2 in this case
-::
-:: If this is all a bit confusing, there is a robust DEBUG mode.  Set the environment
-:: variable DEBUG=1 prior to running your batch file to see a nice display of what's
-:: happening.  You can even run GetOpt.btm direction with parameters and DEBUG on to see
-:: what's going on.  
-::
-:: Example:
-::   set DEBUG=1 %+ GetOpt.btm /v /port:171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!" %+ unset DEBUG
-::
+:: Please see the GetOpt.txt for usage information
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+:: -----------------------------------------------------------------------------------------
+:: Configuration Directives
+:: -----------------------------------------------------------------------------------------
+:: Set UseColorOutput to 0 it disable color output while in debug mode
+set UseColorOutput=1
+
+:: Set the debug color.  Options are RED, CYAN, YELLOW, MAGENTA, WHITE, GREEN, BLACK, BLUE
+set DebugColor=RED
+
+
+:: -----------------------------------------------------------------------------------------
+:: Start of script execution
+:: -----------------------------------------------------------------------------------------
 :: Clean up the environment before we get going and get rid of old GetOpt variables
 unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
+set getopt_TotalArgs=%@Words[%*]
 
 :: If in debug mode, kick off the display by showing the number of arguments
 iff defined DEBUG then
-	echo ---GetOpt Debug Messages Follow ----------------------------------------------
+	echo --- GetOpt Debug Mode Activated ------------------------------------------------
 
-	:: Set the color of the output to RED.  This will show colored Debug statements
-	call SetColor Red
+	:: Set the color of the debug output
+	gosub SetColor %DebugColor
 
 	echo.
 	echo Working with command line:
-	echo   %$
+	echo   %*
 	echo.
-	echo GetOpt is processing %# arguments:
+	echo GetOpt is processing %getopt_TotalArgs arguments:
 endiff
 
 :: Loop through all command line arguments one at a time.
-do i = 1 to %#
-	if defined DEBUG (echo. %+ echo Scan #%i:)
+do i = 1 to %getopt_TotalArgs
+	:: Empty the index variables
+	unset getopt_ColonIdx getopt_EqualIdx getopt_ValueIdx
+
+	:: Set getopt_Current to the current argument text we are working with
+	set getopt_Current=%@Word[%@Dec[%i],%*]
+
+	if defined DEBUG (echo. %+ echo Scan #%i: "%getopt_Current")
 
 	:: If first character starts with a - or / it must be an option
-	iff %@instr[0,1,%[%i]] == - .or. %@instr[0,1,%[%i]] == / then
-		set getopt_Parm=%[%i]
-		if defined DEBUG echo  - Item "%getopt_Parm" is an option.
+	iff %@instr[0,1,%getopt_Current] == - .or. %@instr[0,1,%getopt_Current] == / then
+		set getopt_Parm=%getopt_Current
+		if defined DEBUG echo  - Item is an option.
 
 		:: Set the Colon Index to the position of the colon.  0 means none was found
 		set getopt_ColonIdx=%@index[%getopt_Parm,:]
 
-		:: Display the index position of the colon
+		:: Set the Equal Index to the position of the equalsign.  0 means none was found
+		set getopt_EqualIdx=%@index[%getopt_Parm,=]
+
+		:: Display the index position of the colon or equal sign in debug output
 		iff defined DEBUG .AND. %getopt_ColonIdx GE 0 then
 			echo  - Found colon at index position: %getopt_ColonIdx
 		endiff
+		iff defined DEBUG .AND. %getopt_EqualIdx GE 0 then
+			echo  - Found equal sign at index position: %getopt_EqualIdx
+		endiff
 
-		:: If the index is GE 0 then we must have a colon in the option.
-		:: set the OPTION value to the stuff to the right of the colon
+		:: Set the value index to the position of the colon or equal sign
 		iff %getopt_ColonIdx ge 0 then
-			set getopt_ParmName=%@instr[2, %@Dec[%getopt_ColonIdx] , %getopt_Parm]
+			set getopt_ValueIdx=%getopt_ColonIdx
+		elseiff %getopt_EqualIdx ge 0 then
+			set getopt_ValueIdx=%getopt_EqualIdx
+		endiff		
+		iff defined DEBUG .AND. %getopt_ValueIdx GE 0 then
+			echo  - ValueIndex = %getopt_ValueIdx
+		endiff
+
+		:: If the value index is GE 0 then we must have a colon or equal sign in the option.
+		:: set the OPTION value to the stuff to the right of the colon or equal sign
+		iff %getopt_ValueIdx ge 0 then
+			set getopt_ParmName=%@instr[2, %@Dec[%getopt_ValueIdx] , %getopt_Parm]
 			if defined DEBUG echo  - ParmName  = "%getopt_ParmName"
-			set getopt_ParmValue=%@right[%@eval[-%getopt_ColonIdx-1],%getopt_Parm]
+			set getopt_ParmValue=%@right[%@eval[-%getopt_ValueIdx-1],%getopt_Parm]
 			if defined DEBUG echo  - Parmvalue = "%getopt_ParmValue"
 			set OPTION_%getopt_ParmName=%getopt_ParmValue
 		else
 			:: This is a flag, so simply set the value to 1
-			if defined DEBUG echo  - No colon found in "%getopt_Parm"
+			if defined DEBUG echo  - No colon or equal sign found in "%getopt_Parm"
 			set getopt_ParmName=%@right[%@Dec[%@len[%getopt_Parm]],%getopt_Parm]
 			set getopt_ParmValue=1
 			if defined DEBUG echo  - ParmName = "%getopt_ParmName"
@@ -131,19 +96,18 @@ do i = 1 to %#
 
 		:: Regardless if there was a value or not, display what is going to occur
 		if defined DEBUG echo  - Setting Variable OPTION_%getopt_ParmName=%getopt_ParmValue
+
 	else
 		:: There was no / or - found, therefore this must be a paramater, not an option
-		if defined DEBUG echo  - "%[%i]" is a parameter, not an option
-		set PARAM_%getopt_ParmCounter=%[%i]
+		if defined DEBUG echo  - "%getopt_Current" is a parameter, not an option
+		set PARAM_%getopt_ParmCounter=%getopt_Current
 		set PARAM_0=%getopt_ParmCounter
 		if defined DEBUG echo  - Updating Number of Parms.  PARAM_0=%PARAM_0
-		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter = "%[%i]"
+		if defined DEBUG echo  - Setting Variable PARAM_%getopt_ParmCounter="%getopt_Current"
 		set getopt_ParmCounter=%@Inc[%getopt_ParmCounter]
 	endiff
 enddo
 
-:: Perform cleanup
-unset getopt_* 
 
 :: Display summary information
 iff defined DEBUG then
@@ -154,15 +118,59 @@ iff defined DEBUG then
 		echo There were no parameters found.  PARAM_0 has not been set.
 	endiff
 	echo.
-	echo GetOpt has completed processing %# arguments.  Ending Execution.
+	echo GetOpt has completed processing %getopt_TotalArgs arguments.  Ending Execution.
 
 	:: Reset the color back to normal
-	call SetColor Normal
+	gosub SetColor Normal
 
 	echo.
-	echo ---End GetOpt Debug Messages -------------------------------------------------
+	echo --- End GetOpt Debug Messages -------------------------------------------------
 	echo.
 endiff
 
-:: Return to calling program
+
+:: Perform cleanup and return to the calling program
+unset getopt_* UseColorOutput DebugColor
 quit
+
+
+:: -----------------------------------------------------------------------------------------
+:: SetColor [Color]
+:: Simple routinethat sets the current console color to what is chosen.  Sending
+:: the color "Normal" will set the color back to the default.
+:: -----------------------------------------------------------------------------------------
+:SetColor [Color]
+	iff %UseColorOutput gt 0 then
+		Switch %@Upper[%Color]
+			Case CYAN
+				echos ^e[36;1m
+
+			Case RED
+				echos ^e[31;1m
+
+			Case YELLOW
+				echos ^e[33;1m
+
+			Case MAGENTA
+				echos ^e[35;1m
+
+			Case WHITE
+				echos ^e[37;1m
+
+			Case GREEN
+				echos ^e[32;1m
+
+			Case BLACK
+				echos ^e[30m
+
+			Case BLUE
+				echos ^e[34m
+		
+			Case NORMAL
+				echos ^e[0m
+
+			Default
+				echo ** ERROR Setting Color.  Unknown Directive:  '%Color' **
+		EndSwitch
+	endiff
+return
