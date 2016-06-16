@@ -96,11 +96,11 @@ Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PAR
 
    Example:   GetOpt.btm /a /foo:bar filename1 filename2
 
-   %OPTION_a will be set to 1
-   %OPTION_foo will be set to bar
-   %PARAM_1 will be set to filename1
-   %PARAM_2 wil lbe set to filename2
-   %PARAM_0 will be set to 2
+   %OPTION_a   = 1
+   %OPTION_foo = bar
+   %PARAM_1    = filename1
+   %PARAM_2    = filename2
+   %PARAM_0    = 2
    
    
 LARGE EXAMPLE
@@ -108,12 +108,12 @@ LARGE EXAMPLE
 
    BatchFile.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!"
       
-	  %OPTION_v will equal 1
-      %OPTION_port will equal 171
-      %PARAM_1 will equal Filename1.csv
-      %OPTION_LongOpt will equal 1
-      %PARAM_2 will equal OutputFileName
-      %OPTION_x will equal "Hello There!"
+      %OPTION_v = 1
+      %OPTION_port = 171
+      %PARAM_1 = Filename1.csv
+      %OPTION_LongOpt = 1
+      %PARAM_2 = OutputFileName
+      %OPTION_x = "Hello There!"
       %PARAM_0 will be set to the number of parameters, so 2 in this case
 
 	  

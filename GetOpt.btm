@@ -51,7 +51,7 @@ do i = 1 to %getopt_TotalArgs
 	:: If first character starts with a - or / it must be an option
 	iff %@instr[0,1,%getopt_Current] == - .or. %@instr[0,1,%getopt_Current] == / then
 		set getopt_Parm=%getopt_Current
-		if defined DEBUG echo  - Item is an option.
+		if defined DEBUG echo  - Item is an switch or option
 
 		:: Set the Colon Index to the position of the colon.  0 means none was found
 		set getopt_ColonIdx=%@index[%getopt_Parm,:]
@@ -59,23 +59,14 @@ do i = 1 to %getopt_TotalArgs
 		:: Set the Equal Index to the position of the equalsign.  0 means none was found
 		set getopt_EqualIdx=%@index[%getopt_Parm,=]
 
-		:: Display the index position of the colon or equal sign in debug output
-		iff defined DEBUG .AND. %getopt_ColonIdx GE 0 then
-			echo  - Found colon at index position: %getopt_ColonIdx
-		endiff
-		iff defined DEBUG .AND. %getopt_EqualIdx GE 0 then
-			echo  - Found equal sign at index position: %getopt_EqualIdx
-		endiff
-
 		:: Set the value index to the position of the colon or equal sign
 		iff %getopt_ColonIdx ge 0 then
+			if defined DEBUG echo  - Found colon at index position: %getopt_ColonIdx
 			set getopt_ValueIdx=%getopt_ColonIdx
 		elseiff %getopt_EqualIdx ge 0 then
+			if defined DEBUG echo  - Found equal sign at index position: %getopt_EqualIdx
 			set getopt_ValueIdx=%getopt_EqualIdx
 		endiff		
-		iff defined DEBUG .AND. %getopt_ValueIdx GE 0 then
-			echo  - ValueIndex = %getopt_ValueIdx
-		endiff
 
 		:: If the value index is GE 0 then we must have a colon or equal sign in the option.
 		:: set the OPTION value to the stuff to the right of the colon or equal sign
