@@ -39,16 +39,16 @@ COMMAND LINE ARGUMENTS
 ----------------------
 I have divided the command line arguments into three groups.
 
-   SWITCHES:  These are On/Off switches and do not pass a value.  They can be a single character or they can be longer words.
+   **SWITCHES:**  These are On/Off switches and do not pass a value.  They can be a single character or they can be longer words.
 
       Example:  Batchfile.btm /Verbose /D /Foo /Bar
 
 
-   OPTIONS:  These are the same as switches, but they can pass a value.  Like other switches, they can be a single character or a longer name
+   **OPTIONS:**  These are the same as switches, but they can pass a value.  Like other switches, they can be a single character or a longer name
 	
       Example:  Batchfile.btm /N:7 /Name=FooBar /B="Arg With Spaces"
 
-   PARAMATERS:  These are not switches or options, they are just bare parameters passed to the batch file  They are usually required as switches are often optional.
+   **PARAMATERS:**  These are not switches or options, they are just bare parameters passed to the batch file  They are usually required as switches are often optional.
 
       Example:  Batchfile.btm Filename1 Filename2
 
