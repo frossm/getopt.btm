@@ -51,7 +51,6 @@ I have divided the command line arguments into three groups.
 Example:  Batchfile.btm /Verbose /D /Foo /Bar
 ```
 
-
    **OPTIONS:** These are the same as switches, but they can pass a value.  Like other switches, they can be a single character or a longer name.  The seperator character between the option name and the value can be either a colon (:) or an equal sign (=).  Please remember to quote values that contain spaces.
 
 Also note there can be no spaces around the colon or equal sign.
@@ -62,7 +61,6 @@ Also note there can be no spaces around the colon or equal sign.
 
 Example:  Batchfile.btm /N:42 /Name=FooBar /B="Value With Spaces"
 ```
-
 
    **PARAMETERS:** These are not switches or options, they are just bare parameters passed to the batch file  They are usually required as switches are often optional.
 
