@@ -3,9 +3,9 @@
 
 
 ## INTRODUCTION  ##
-GetOpt is a very useful UNIX tool that will process command line options.  I wanted to build a similar capability for my TakeCmd batch files.  
+GetOpt is a very useful UNIX tool that will process command line options and allow the parsing and heavy lifting to be done in the background so they can be easily processed by the calling program.  I wanted to build a similar capability for my TakeCmd batch files.  
 
-Detailed instructions reside below, but at a high level, this batch file is called from a source file and is sent the command line entered.  It will process the switches, options and parameters and set environment variables that can be referenced when control is passed back to the calling script.
+Detailed instructions reside below, but at a high level, this batch file is called from a source batch file and is sent the command line entered (%*).  It will process the switches, options and parameters and set environment variables that can be referenced when control is passed back to the calling script.
 
 The best way to learn this tool is probably to just turn on DEBUG mode and run GetOpt.btm and give it parameters.  You'll see everything that is being done very clearly (if I do say so myself.)  To turn on Debug Mode just execute the following in your tcc window before you run GetOpt.btm.  This also works if you run your batch file that calls GetOpt.btm.
 
@@ -16,7 +16,7 @@ The best way to learn this tool is probably to just turn on DEBUG mode and run G
 set DEBUG=1 
 ```
 
-The latest version of the software can always be found at:  
+The latest version of the software and this document can always be found at:  
 
 **https://bitbucket.org/frossm/getopt.btm**
 
@@ -24,11 +24,11 @@ The latest version of the software can always be found at:
 ## DISCLAIMER ##
 In no way does this tool attempt to be directly compatible with UNIX GetOpt.  It does a similar thing, but customized to work in a batch environment.
 
-Secondly, this is free software and there is no warrantee at all, implied or otherwise.  Use at your own risk.  Don't blow up the internet please.
+Secondly, this is free software and there is no warrantee at all, implied or otherwise.  Use at your own risk.  Don't bring down the internet please.
 
 
 ## CALLING GETOPT.BTM ##
-In order for GetOpt to do its job, it has to be called from your source batch file.  This is done near the top of the source file as follows:
+In order for GetOpt to do its job, it has to be called from your source batch file.  This is done near the top of the file as follows:
 
 ```
 #!batch
@@ -36,7 +36,7 @@ In order for GetOpt to do its job, it has to be called from your source batch fi
 call C:\Where\Ever\You\Put\It\GetOpt.btm %*
 ```
 
-If GetOpt.btm is in your path then you shouldn't need the full path.  The %* sends the command line your batch file received when started to GetOpt.btm for processing.
+If GetOpt.btm is in your path then you shouldn't need the full path.  The %* sends the command line your batch file received when started to GetOpt.btm for it to process.
 
 
 ## COMMAND LINE ARGUMENTS ##
@@ -51,13 +51,15 @@ I have divided the command line arguments into three groups.
 Example:  Batchfile.btm /Verbose /D /Foo /Bar
 ```
 
-   **OPTIONS:** These are the same as switches, but they can pass a value.  Like other switches, they can be a single character or a longer name
+   **OPTIONS:** These are the same as switches, but they can pass a value.  Like other switches, they can be a single character or a longer name.  The seperator character between the option name and the value can be either a colon (:) or an equal sign (=).  Please remember to quote values that contain spaces.
+
+Also note there can be no spaces around the colon or equal sign.
 	
 
 ```
 #!batch
 
-Example:  Batchfile.btm /N:7 /Name=FooBar /B="Arg With Spaces"
+Example:  Batchfile.btm /N:42 /Name=FooBar /B="Value With Spaces"
 ```
 
    **PARAMETERS:** These are not switches or options, they are just bare parameters passed to the batch file  They are usually required as switches are often optional.
@@ -74,7 +76,9 @@ After GetOpt.btm is processed and control returns back to the source batch file,
 Please note, it is highly encouraged that the source program make use of the SetLocal / EndLocal TCMD commands.  If used properly, this will ensure that all of the GetOpt environment variables will not exist when the source batch file ends.  If not they will hang out in your environment.  Probably not a huge deal as they will be cleaned up before GetOpt.btm processes another program, but it's sloppy.  Your mom wouldn't want you to be messy would she?  Thought not. :)
 
 
-## SWITCHES & OPTIONS ##
+## PROCESSING SWITCHES & OPTIONS ##
+After processing, GetOpt.btm will set an environment variable for each option and switch.  The name of the variable will begin with OPTION_ and end with the name of your option.    Please see the examples below where it will be more clear.
+
 For any switches entered, an environment variable will be created and hold the value of 1.  The 1 is really not important as you should check for the existence of the environment variable, not really the value (although you could.)
 
 As for options, the value of the environment variable will be the value entered with the option.
@@ -83,11 +87,10 @@ Only the "/" or the "-" can be used to start switches & options.  Anything else 
 
 For example, if you specify the switch:
 
-
 ```
 #!batch
 
-GetOpt.btm /a /foo:bar /LongOption=Snowman
+GetOpt.btm /a /foo:bar /LongOption=Zaphod
 ```
 
 the following environment variables will be set:
@@ -98,17 +101,24 @@ the following environment variables will be set:
 
 %Option_a=1
 %Option_foo=bar
-%OPTION_LongOption=Snowman
+%OPTION_LongOption=Zapod
 
 ```
-To check for an option in your source batch file use:
+In the calling program to check for the existance of a switch or option, I used if defined.  Here is an example:
 
 ```
 #!batch
 
-if defined OPTION_arg
-```
+Example: GetOpt.btm /Guest=Trillian
 
+You would check for this in the calling program as:
+
+iff defined OPTION_Guest then
+  echo Hello there %OPTION_Guest
+endiff
+
+```
+Here is a longer example
 ```
 #!batch
 
@@ -124,7 +134,9 @@ Should be checked in the source batch file as:
 
 
 ## PARAMETERS ##
-Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n.  PARAM_0 is special and holds the value that contains the number of PARAMs.  This is useful for looping through all of them.  For example, you can check this in the source batch file by using:
+Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n.  The order of the parameters will be order on the command line.
+
+PARAM_0 is special and holds the value that contains the number of parameters entered.  This is useful for looping through all of them.  For example, you can check this in the source batch file by using:
 
 ```
 #!batch
@@ -170,7 +182,11 @@ set DEBUG=1 %+ GetOpt.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:
 
 ```
 
-## MORE HELP PLEASE ##
+## CONCLUSION ##
 If you have questions or need a hand, just let me know.  This is a fun batch file to write and if you are stuck or have suggestions to improve it please let me know.  Also, if there are areas in this document that need further clarifications or additions, just drop me a note.
+
+If you find a bug please submit it to the bug tracking site at bitbucket.org (where you downloaded the software) or just drop me a note.
+
+Lastly, if you have ideas on enhancements I'd love for this to continue to evolve.  Just drop me a note.
 
 michael@fross.org
