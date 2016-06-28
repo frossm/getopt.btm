@@ -33,7 +33,7 @@ In order for GetOpt to do its job, it has to be called from your source batch fi
 ```
 #!batch
 
-call C:\Where\Ever\You\Put\It\GetOpt.btm %
+call C:\Where\Ever\You\Put\It\GetOpt.btm %*
 ```
 
 If GetOpt.btm is in your path then you shouldn't need the full path.  The %* sends the command line your batch file received when started to GetOpt.btm for it to process.
