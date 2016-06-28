@@ -1,9 +1,9 @@
-GetOpt.btm User Manual 
-Document Version 2.0
+# GetOpt.btm User Manual 
+Document Version 2.0 #
 
 
-INTRODUCTION
-------------
+## INTRODUCTION
+------------ ##
 Getopt is a very useful UNIX tool that will process command line options.  I wanted to build a similar capability for my TakeCmd batch files.
 
 Detailed instructions reside below, but at a high level, this batch file is called from a source file and is sent the command line entered.  It will process the options and parameters and set variables that can be referenced when control is passed back to the calling file.
