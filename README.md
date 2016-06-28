@@ -1,5 +1,5 @@
-# GetOpt.btm User Manual 
-Document Version 2.0 #
+# GetOpt.btm User Manual #
+### Document Version 2.0 ###
 
 ## INTRODUCTION  ##
 GetOpt is a very useful UNIX tool that will process command line options.  I wanted to build a similar capability for my TakeCmd batch files.
