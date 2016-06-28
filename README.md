@@ -1,12 +1,12 @@
 # GetOpt.btm User Manual #
-### Document Version 2.0 ###
+*### Document Version 2.0 ###*
 
 ## INTRODUCTION  ##
-GetOpt is a very useful UNIX tool that will process command line options.  I wanted to build a similar capability for my TakeCmd batch files.
+GetOpt is a very useful UNIX tool that will process command line options.  I wanted to build a similar capability for my TakeCmd batch files.  
 
-Detailed instructions reside below, but at a high level, this batch file is called from a source file and is sent the command line entered.  It will process the options and parameters and set variables that can be referenced when control is passed back to the calling file.
+Detailed instructions reside below, but at a high level, this batch file is called from a source file and is sent the command line entered.  It will process the switches, options and parameters and set environment variables that can be referenced when control is passed back to the calling script.
 
-The best way to learn this tool is probably to just run GetOpt.btm and give it parameters.  If you turn DEBUG mode on you can see everything that is being done very clearly (if I do say so myself.)  To turn on Debug Mode just execute: 
+The best way to learn this tool is probably to just turn on DEBUG mode and run GetOpt.btm and give it parameters.  You'll see everything that is being done very clearly (if I do say so myself.)  To turn on Debug Mode just execute: 
 
 
 ```
