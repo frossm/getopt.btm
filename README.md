@@ -1,5 +1,5 @@
 # GetOpt.btm User Manual #
-*### Document Version 2.0 ###*
+*Document Version 2.0*
 
 
 ## INTRODUCTION  ##
