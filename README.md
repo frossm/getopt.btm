@@ -3,7 +3,7 @@
 
 
 ## INTRODUCTION  ##
-GetOpt is a very useful UNIX tool that will process command line options and allow the parsing and heavy lifting to be done in the background so they can be easily processed by the calling program.  I wanted to build a similar capability for my TakeCmd batch files.  Take Command is a comprehensive interactive GUI and command line environment that makes using the Windows command prompt and creating batch files easy, faster and far more powerful.  For more information, please take a look at the [JPSoftwarer](http://jpsoft.com).
+GetOpt is a very useful UNIX tool that will process command line options and allow the parsing and heavy lifting to be done in the background so they can be easily processed by the calling program.  I wanted to build a similar capability for my TakeCmd batch files.  Take Command is a comprehensive interactive GUI and command line environment that makes using the Windows command prompt and creating batch files easy, faster and far more powerful.  For more information, please take a look at the [JPSoftware](http://jpsoft.com).
 
 Detailed instructions reside below, but at a high level, this batch file is called from a source batch file and is sent the command line entered (%*).  It will process the switches, options and parameters and set environment variables that can be referenced when control is passed back to the calling script.
 
