@@ -51,7 +51,7 @@ do i = 1 to %getopt_TotalArgs
 	:: If first character starts with a - or / it must be an option
 	iff %@instr[0,1,%getopt_Current] == - .or. %@instr[0,1,%getopt_Current] == / then
 		set getopt_Parm=%getopt_Current
-		if defined DEBUG echo  - Item is an switch or option
+		if defined DEBUG echo  - Item is a switch or option
 
 		:: Set the Colon Index to the position of the colon.  0 means none was found
 		set getopt_ColonIdx=%@index[%getopt_Parm,:]
