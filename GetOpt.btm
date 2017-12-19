@@ -1,9 +1,10 @@
 @echo off
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: GetOpt - Process command line options                                  Michael Fross
-:: Version 2.0                                                        michael@fross.org
+:: 				                                                       michael@fross.org
 ::                                                                     http://fross.org
-:: Please see the GetOpt.txt for usage information
+:: Please see the README.txt / README.md for usage information
+:: Latest version:	https://bitbucket.org/frossm/getopt.btm
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: -----------------------------------------------------------------------------------------
@@ -14,18 +15,21 @@ set UseColorOutput=1
 
 :: Set the debug color.  Options are RED, CYAN, YELLOW, MAGENTA, WHITE, GREEN, BLACK, BLUE
 set DebugColor=RED
+set DebugHeaderFooterColor=WHITE
 
 
 :: -----------------------------------------------------------------------------------------
 :: Start of script execution
 :: -----------------------------------------------------------------------------------------
-:: Clean up the environment before we get going and get rid of old GetOpt variables
+:: Clean up and prep the environment before we get going
 unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
 set getopt_TotalArgs=%@Words[%*]
 
 :: If in debug mode, kick off the display by showing the number of arguments
 iff defined DEBUG then
+	gosub SetColor %DebugHeaderFooterColor
+	echo.
 	echo --- GetOpt Debug Mode Activated ------------------------------------------------
 
 	:: Set the color of the debug output
@@ -77,7 +81,7 @@ do i = 1 to %getopt_TotalArgs
 			if defined DEBUG echo  - Parmvalue = "%getopt_ParmValue"
 			set OPTION_%getopt_ParmName=%getopt_ParmValue
 		else
-			:: This is a flag, so simply set the value to 1
+			:: This is a switch, so simply set the value to 1
 			if defined DEBUG echo  - No colon or equal sign found in "%getopt_Parm"
 			set getopt_ParmName=%@right[%@Dec[%@len[%getopt_Parm]],%getopt_Parm]
 			set getopt_ParmValue=1
@@ -89,8 +93,8 @@ do i = 1 to %getopt_TotalArgs
 		if defined DEBUG echo  - Setting Variable OPTION_%getopt_ParmName=%getopt_ParmValue
 
 	else
-		:: There was no / or - found, therefore this must be a paramater, not an option
-		if defined DEBUG echo  - "%getopt_Current" is a parameter, not an option
+		:: There was no / or - found, therefore this must be a parameter, not an option
+		if defined DEBUG echo  - "%getopt_Current" is a parameter, not a switch or option
 		set PARAM_%getopt_ParmCounter=%getopt_Current
 		set PARAM_0=%getopt_ParmCounter
 		if defined DEBUG echo  - Updating Number of Parms.  PARAM_0=%PARAM_0
@@ -111,17 +115,19 @@ iff defined DEBUG then
 	echo.
 	echo GetOpt has completed processing %getopt_TotalArgs arguments.  Ending Execution.
 
-	:: Reset the color back to normal
-	gosub SetColor Normal
-
+	gosub SetColor %DebugHeaderFooterColor
 	echo.
 	echo --- End GetOpt Debug Messages -------------------------------------------------
 	echo.
+
+	:: Reset the color back to normal
+	gosub SetColor Normal
+
 endiff
 
 
 :: Perform cleanup and return to the calling program
-unset getopt_* UseColorOutput DebugColor
+unset getopt_* UseColorOutput DebugColor DebugHeaderFooterColor
 quit
 
 
