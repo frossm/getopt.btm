@@ -24,7 +24,7 @@ set DebugHeaderFooterColor=WHITE
 :: Clean up and prep the environment before we get going
 unset getopt* OPTION_* PARAM_*
 set getopt_ParmCounter=1
-set getopt_TotalArgs=%@Words[%*]
+set getopt_TotalArgs=%@Words[" ",%*]
 
 :: If in debug mode, kick off the display by showing the number of arguments
 iff defined DEBUG then
@@ -50,7 +50,7 @@ do i = 1 to %getopt_TotalArgs
 	:: Set getopt_Current to the current argument text we are working with
 	set getopt_Current=%@Word[%@Dec[%i],%*]
 
-	if defined DEBUG (echo. %+ echo Scan #%i: "%getopt_Current")
+	if defined DEBUG (echo. %+ echo Scan #%i: %getopt_Current)
 
 	:: If first character starts with a - or / it must be an option
 	iff %@instr[0,1,%getopt_Current] == - .or. %@instr[0,1,%getopt_Current] == / then
@@ -128,6 +128,9 @@ endiff
 
 :: Perform cleanup and return to the calling program
 unset getopt_* UseColorOutput DebugColor DebugHeaderFooterColor
+
+:: If Debug is set, then pause before passing control back to the calling program
+if defined DEBUG pause Press Any Key To Continue To The Calling Program...
 quit
 
 
