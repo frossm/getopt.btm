@@ -130,7 +130,7 @@ endiff
 unset getopt_* UseColorOutput DebugColor DebugHeaderFooterColor
 
 :: If Debug is set, then pause before passing control back to the calling program
-if defined DEBUG pause Press Any Key To Continue To The Calling Program...
+::if defined DEBUG pause Press Any Key To Continue To The Calling Program...
 quit
 
 
