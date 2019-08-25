@@ -18,7 +18,7 @@ set DEBUG=1
 
 The latest version of the software and this document can always be found at:  
 
-**https://bitbucket.org/frossm/getopt.btm**
+**https://github.com/frossm/getopt.btm**
 
 
 ## DISCLAIMER ##
@@ -188,7 +188,7 @@ set DEBUG=1 %+ GetOpt.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:
 ## CONCLUSION ##
 If you have questions or need a hand, just let me know.  This is a fun batch file to write and if you are stuck or have suggestions to improve it please let me know.  Also, if there are areas in this document that need further clarifications or additions, just drop me a note.
 
-If you find a bug please submit it to the bug tracking site at bitbucket.org (where you downloaded the software) or just drop me a note.
+If you find a bug please submit it to the bug tracking site at Github (where you downloaded the software) or just drop me a note.
 
 Lastly, if you have ideas on enhancements I'd love for this to continue to evolve.  Just drop me a note.
 
