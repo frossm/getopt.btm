@@ -11,11 +11,63 @@ The best way to learn this tool is probably to just turn on DEBUG mode and run G
 
 
 ```
-#!batch
-
 set DEBUG=1 
+
+GetOpt.btm /p1 /p2:2 file1 -P3="hello there" file2 -LongName=34
 ```
 
+The version at the time of this writing produces the following debug output:
+```
+--- GetOpt Debug Mode Activated ------------------------------------------------
+
+Working with command line:
+  /p1 /p2:2 file1 -P3="hello there" file2 -longname=34
+
+GetOpt is processing 6 arguments:
+
+Scan #1: /p1
+ - Item is a switch or option
+ - No colon or equal sign found in "/p1"
+ - ParmName = "p1"
+ - Setting Variable OPTION_p1=1
+
+Scan #2: /p2:2
+ - Item is a switch or option
+ - Found colon at index position: 3
+ - ParmName  = "p2"
+ - Parmvalue = "2"
+ - Setting Variable OPTION_p2=2
+
+Scan #3: file1
+ - "file1" is a parameter, not a switch or option
+ - Updating Number of Parms.  PARAM_0=1
+ - Setting Variable PARAM_1="file1"
+
+Scan #4: -P3="hello there"
+ - Item is a switch or option
+ - Found equal sign at index position: 3
+ - ParmName  = "P3"
+ - Parmvalue = ""hello there""
+ - Setting Variable OPTION_P3="hello there"
+
+Scan #5: file2
+ - "file2" is a parameter, not a switch or option
+ - Updating Number of Parms.  PARAM_0=2
+ - Setting Variable PARAM_2="file2"
+
+Scan #6: -longname=34
+ - Item is a switch or option
+ - Found equal sign at index position: 9
+ - ParmName  = "longname"
+ - Parmvalue = "34"
+ - Setting Variable OPTION_longname=34
+
+There were 2 parameters found.  Setting PARAM_0=2
+
+GetOpt has completed processing 6 arguments.  Ending Execution.
+
+--- End GetOpt Debug Messages -------------------------------------------------
+```
 The latest version of the software and this document can always be found at:  
 
 **https://github.com/frossm/getopt.btm**
@@ -31,8 +83,6 @@ Secondly, this is free software and there is no warrantee at all, implied or oth
 In order for GetOpt to do its job, it has to be called from your source batch file.  This is done near the top of the file as follows:
 
 ```
-#!batch
-
 call C:\Where\Ever\You\Put\It\GetOpt.btm %*
 ```
 
@@ -46,8 +96,6 @@ I have divided the command line arguments into three groups.
 
 
 ```
-#!batch
-
 Example:
 Batchfile.btm /Verbose /D /Foo /Bar
 ```
@@ -58,8 +106,6 @@ Also note there can be no spaces around the colon or equal sign.
 	
 
 ```
-#!batch
-
 Example:
 Batchfile.btm /N:42 /Name=FooBar /B="Value With Spaces"
 ```
@@ -68,8 +114,6 @@ Batchfile.btm /N:42 /Name=FooBar /B="Value With Spaces"
 
 
 ```
-#!batch
-
 Example:
 Batchfile.btm Filename1 Filename2
 ```
@@ -91,8 +135,6 @@ Only the "/" or the "-" can be used to start switches & options.  Anything else 
 For example, if you specify the switch:
 
 ```
-#!batch
-
 GetOpt.btm /a /foo:bar /LongOption=Zaphod
 ```
 
@@ -100,8 +142,6 @@ the following environment variables will be set:
 
 
 ```
-#!batch
-
 %Option_a=1
 %Option_foo=bar
 %OPTION_LongOption=Zapod
@@ -110,8 +150,6 @@ the following environment variables will be set:
 In the calling program to check for the existance of a switch or option, I used if defined.  Here is an example:
 
 ```
-#!batch
-
 Example: GetOpt.btm /Guest=Trillian
 
 You would check for this in the calling program as:
@@ -123,8 +161,6 @@ endiff
 ```
 Here is a longer example
 ```
-#!batch
-
 Example: GetOpt.btm -a -foo:bar -Chicago=Bears
 
 Should be checked in the source batch file as:
@@ -142,8 +178,6 @@ Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PAR
 PARAM_0 is special and holds the value that contains the number of parameters entered.  This is useful for looping through all of them.  For example, you can check this in the source batch file by using:
 
 ```
-#!batch
-
 do i = 1 to %PARAM_0 by 1 ...
 
 Example:   GetOpt.btm /a /foo:bar filename1 filename2
@@ -158,8 +192,6 @@ Example:   GetOpt.btm /a /foo:bar filename1 filename2
 ## LARGE EXAMPLE ##
 
 ```
-#!batch
-
 BatchFile.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!"
       
 %OPTION_v will equal 1
@@ -179,8 +211,6 @@ Here is the above example with the debug toggle before and after:
 
 
 ```
-#!batch
-
 set DEBUG=1 %+ GetOpt.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!" %+ unset DEBUG
 
 ```
