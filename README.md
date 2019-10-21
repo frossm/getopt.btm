@@ -76,7 +76,7 @@ The latest version of the software and this document can always be found at:
 ## DISCLAIMER ##
 In no way does this tool attempt to be directly compatible with UNIX GetOpt.  It does a similar thing, but customized to work in a batch environment.
 
-Secondly, this is free software and there is no warrantee at all, implied or otherwise.  Use at your own risk.  Don't bring down the internet please.
+This program is licensed per the LICENSE section below.
 
 
 ## CALLING GETOPT.BTM ##
@@ -223,3 +223,12 @@ If you find a bug please submit it to the bug tracking site at Github (where you
 Lastly, if you have ideas on enhancements I'd love for this to continue to evolve.  Just drop me a note.
 
 michael @ fross.org
+
+## LICENSE ##
+This program is copyright 2015 - 2019 by Michael Fross, all rights reserved.  
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
