@@ -225,7 +225,7 @@ Lastly, if you have ideas on enhancements I'd love for this to continue to evolv
 michael @ fross.org
 
 ## LICENSE ##
-The MIT License
+[The MIT License](https://opensource.org/licenses/MIT)
 
 Copyright 2015 - 2019 by Michael Fross
 
