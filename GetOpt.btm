@@ -1,26 +1,16 @@
 @echo off
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: GetOpt - Process command line options                                  Michael Fross
-:: 				                                                       michael@fross.org
+:: 				                                                      michael@fross.org
 ::                                                                     http://fross.org
 :: Please see the README.txt / README.md for usage information
 :: Latest version:	https://github.com/frossm/getopt.btm
 ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: LICENSE:
-:: This program is copyright 2015-2019 by Michael Fross
-:: This program is free software: you can redistribute it and/or modify
-:: it under the terms of the GNU General Public License as published by
-:: the Free Software Foundation, either version 3 of the License, or
-:: (at your option) any later version.
+:: This program is licensed under the OpenSource MIT license.  Please see the 
+:: LICENSE.txt file, include with this distribution for details on acceptable use.
 ::
-:: This program is distributed in the hope that it will be useful,
-:: but WITHOUT ANY WARRANTY; without even the implied warranty of
-:: MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-:: GNU General Public License for more details.
-::
-:: You should have received a copy of the GNU General Public License
-:: along with this program.  If not, see <https://www.gnu.org/licenses/>.
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: -----------------------------------------------------------------------------------------
