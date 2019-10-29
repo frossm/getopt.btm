@@ -1,16 +1,17 @@
 @echo off
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: GetOpt - Process command line options                                  Michael Fross
-::                                                                    michael@fross.org
-::                                                                     http://fross.org
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: GetOpt - Process command line options                                       Michael Fross
+::                                                                         michael@fross.org
+::                                                                          http://fross.org
 :: Please see the README.txt / README.md for usage information
 :: Latest version located at: https://github.com/frossm/getopt.btm
 ::
 :: LICENSE:
-:: This program is licensed under the OpenSource MIT license.  Please see the 
-:: LICENSE.txt file, included with this distribution, for details on acceptable use.
-::
-:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: This program is licensed under the OpenSource MIT license.  
+:: https://opensource.org/licenses/MIT
+:: Please see the LICENSE.txt file, included with this distribution, for details 
+:: on acceptable use.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: -----------------------------------------------------------------------------------------
 :: Configuration Directives
