@@ -175,7 +175,7 @@ Should be checked in the source batch file as:
 ## PARAMETERS ##
 Getopt also sets a parameter variable for each paramater entered: PARAM_1 to PARAM_n.  The order of the parameters will be order on the command line.
 
-PARAM_0 is special and holds the value that contains the number of parameters entered.  This is useful for looping through all of them.  For example, you can check this in the source batch file by using:
+PARAM_0 is special and contains the number of parameters entered.  This is useful for looping through all of them.  For example, you can check this in the source batch file by using:
 
 ```
 do i = 1 to %PARAM_0 by 1 ...
@@ -185,7 +185,7 @@ Example:   GetOpt.btm /a /foo:bar filename1 filename2
 %OPTION_a will be set to 1
 %OPTION_foo will be set to bar
 %PARAM_1 will be set to filename1
-%PARAM_2 wil lbe set to filename2
+%PARAM_2 will be set to filename2
 %PARAM_0 will be set to 2
 ```
 
@@ -203,17 +203,9 @@ BatchFile.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:"Hello There
 %PARAM_0 will be set to the number of parameters, so 2 in this case
 
 ```
-
 	  
-Remember, if this is all a bit confusing, there is a robust DEBUG mode.  Set the environment variable DEBUG=1 prior to running your batch file to see a nice display of what's happening.  You can even run GetOpt.btm directly with your command line parameters and DEBUG on to see what's going on.  
+Remember, if this is all a bit confusing, there is a robust DEBUG mode.  Set the environment variable DEBUG=1 prior to running your batch file to see a nice display of what's happening.  You can even run GetOpt.btm directly with your command line parameters and DEBUG on to see what's going on.  Please see the example at the top of this readme....going through this carefull should make this fairly self explanatory.
 
-Here is the above example with the debug toggle before and after:
-
-
-```
-set DEBUG=1 %+ GetOpt.btm /v /port=171 Filename1.csv -LongOpt OutputFileName /x:"Hello There!" %+ unset DEBUG
-
-```
 
 ## CONCLUSION ##
 If you have questions or need a hand, just let me know.  This is a fun batch file to write and if you are stuck or have suggestions to improve it please let me know.  Also, if there are areas in this document that need further clarifications or additions, just drop me a note.
@@ -223,6 +215,7 @@ If you find a bug please submit it to the bug tracking site at Github (where you
 Lastly, if you have ideas on enhancements I'd love for this to continue to evolve.  Just drop me a note.
 
 michael @ fross.org
+
 
 ## LICENSE ##
 [The MIT License](https://opensource.org/licenses/MIT)
