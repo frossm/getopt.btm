@@ -1,3 +1,4 @@
+![GetOpt Logo](https://github.com/frossm/getopt.btm/blob/master/images/GetOpt.btm-1280x320.jpg)
 # GetOpt.btm User Manual #
 *Document Version 2.0*
 
