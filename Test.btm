@@ -1,0 +1,104 @@
+@echo off
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:: GetOpt - Process command line options                                       Michael Fross
+::                                                                         michael@fross.org
+::                                                                          http://fross.org
+:: Please see the README.txt / README.md for usage information
+:: Latest version located at: https://github.com/frossm/getopt.btm
+::
+:: LICENSE:
+:: This program is licensed under the OpenSource MIT license.  
+:: https://opensource.org/licenses/MIT
+:: Please see the LICENSE.txt file, included with this distribution, for details 
+:: on acceptable use.
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+echocolor YELLOW "Automated testing script for GetOpt.btm"
+
+:: Remove any previously set option settings
+unset PARAM_* OPTION_*
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+: Testing Switches
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+echo.
+set TestString=/Verbose /D /Foo parm0 -bar parm1 -ReallyLongSwitchName
+echocolor YELLOW "-Testing On/Off Switches"
+echocolor WHITE "  %TestString"
+
+call .\GetOpt.btm %TestString
+gosub TestSwitch OPTION_Verbose "/Verbose"
+gosub TestSwitch OPTION_D "/D"
+gosub TestSwitch OPTION_Foo "/Foo"
+gosub TestSwitch OPTION_bar "-bar"
+gosub TestSwitch OPTION_ReallyLongSwitchName "-ReallyLongSwitchName"
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+: Testing Options
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+echo.
+set TestString=parm0 /a=14 -b=optionvalue -c:Hello /BBQ:IsDelicious parm1  parm2 /LongName=LongOption
+echocolor YELLOW "-Testing Options"
+echocolor WHITE "  %TestString"
+
+call .\GetOpt.btm %TestString
+gosub TestOption OPTION_a "/a=14" "14"
+gosub TestOption OPTION_b "-b=optionvalue" "optionvalue"
+gosub TestOption OPTION_c "-c:Hello" "Hello"
+gosub TestOption OPTION_BBQ "/BBQ:IsDelicious" "IsDelicious"
+gosub TestOption OPTION_LongName "/LongName=LongOption" "LongOption"
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+: Testing Parameters
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+echo.
+set TestString=parm1 /a=14 -b=optionvalue -c:Hello /BBQ:IsDelicious parm2  parm3 /LongName=LongOption longparamname
+echocolor YELLOW "-Testing Parameters"
+echocolor WHITE "  %TestString"
+
+call .\GetOpt.btm %TestString
+gosub TestOption PARAM_0 "parm0" "4"
+gosub TestOption PARAM_1 "parm1" "parm1"
+gosub TestOption PARAM_2 "parm2" "parm2"
+gosub TestOption PARAM_3 "parm3" "parm3"
+gosub TestOption PARAM_4 "longparamname" "longparamname"
+
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+: Cleanup and Exit
+:::::::::::::::::::::::::::::::::::::::::::::::::::
+unset PARAM_* OPTION_*
+echo.
+echocolor YELLOW "Testing complete"
+quit /b 
+
+
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:Subroutines
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+:TestSwitch [VarName Msg]
+	iff defined %VarName then
+		SetColor GREEN
+		echo  - Pass:  %Msg
+		SetColor NORMAL
+	else
+		SetColor RED
+		echo  - Fail:  %Msg
+		SetColor NORMAL
+	endiff
+return
+
+:TestOption [VarName Msg Value]
+	iff "%[%VarName]"==%Value then
+		SetColor GREEN
+		echo   - Pass:  %Msg
+		SetColor NORMAL
+	else	
+		SetColor RED
+		echo   - Fail:  %Msg
+		SetColor NORMAL
+	endiff
+return

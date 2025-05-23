@@ -70,14 +70,21 @@ do i = 1 to %getopt_TotalArgs
 		set getopt_EqualIdx=%@index[%getopt_Parm,=]
 
 		:: Set the value index to the position of the colon or equal sign
-		iff %getopt_ColonIdx ge 0 then
-			if defined DEBUG echo  - Found colon at index position: %getopt_ColonIdx
-			set getopt_ValueIdx=%getopt_ColonIdx
-		elseiff %getopt_EqualIdx ge 0 then
-			if defined DEBUG echo  - Found equal sign at index position: %getopt_EqualIdx
-			set getopt_ValueIdx=%getopt_EqualIdx
-		endiff		
-
+		:: [Michael Giberti] If `=` and `:` are found, set the value index correctly. Ex: "/path=C:\Temp"
+        iff %getopt_ColonIdx ge 0 .and. %getopt_EqualIdx ge 0 then
+			set getopt_ValueIdx=%@MIN[%getopt_ColonIdx,%getopt_EqualIdx]
+            iff defined DEBUG then
+                 if %getopt_ValueIdx == %getopt_ColonIdx echo  - Found colon at index position: %getopt_ColonIdx
+                 if %getopt_ValueIdx == %getopt_EqualIdx echo  - Found equal sign at index position: %getopt_EqualIdx
+            endiff
+        elseiff %getopt_ColonIdx ge 0 then
+            if defined DEBUG echo  - Found colon at index position: %getopt_ColonIdx
+            set getopt_ValueIdx=%getopt_ColonIdx
+        elseiff %getopt_EqualIdx ge 0 then
+            if defined DEBUG echo  - Found equal sign at index position: %getopt_EqualIdx
+            set getopt_ValueIdx=%getopt_EqualIdx
+        endiff
+		
 		:: If the value index is GE 0 then we must have a colon or equal sign in the option.
 		:: set the OPTION value to the stuff to the right of the colon or equal sign
 		iff %getopt_ValueIdx ge 0 then

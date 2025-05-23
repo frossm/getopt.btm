@@ -87,7 +87,7 @@ In order for GetOpt to do its job, it has to be called from your source batch fi
 call C:\Where\Ever\You\Put\It\GetOpt.btm %*
 ```
 
-If GetOpt.btm is in your path then you shouldn't need the full path.  The %* sends the command line your batch file received when started to GetOpt.btm for it to process.
+If GetOpt.btm is in your path then you shouldn't need the full path.  The `%*` parameter sends the command line your batch file received when started to GetOpt.btm for it to process.
 
 
 ## COMMAND LINE ARGUMENTS ##
@@ -121,7 +121,7 @@ Batchfile.btm Filename1 Filename2
 
 After GetOpt.btm is processed and control returns back to the source batch file, a set of environment variables will be set according to what was processed.  These can be checked from within source program and appropriate actions taken.  For example, if a /v switch is given, the source batch file could turn on Verbose Messages and display additional information to the user.
 
-Please note, it is highly encouraged that the source program make use of the SetLocal / EndLocal TCMD commands.  If used properly, this will ensure that all of the GetOpt environment variables will not exist when the source batch file ends.  If not they will hang out in your environment.  Probably not a huge deal as they will be cleaned up before GetOpt.btm processes another program, but it's sloppy and your mom wouldn't want you to be messy would she?  Thought not. :-)
+Please note, it is highly encouraged that your batch file make use of the SetLocal / EndLocal TCMD commands.  If used properly, this will ensure that all of the GetOpt environment variables will not exist when the source batch file ends.  If not they will hang out in your environment.  Probably not a huge deal as they will be cleaned up before GetOpt.btm processes another program, but it's sloppy and your mom wouldn't want you to be messy would she?  I didn't think so. :-)
 
 
 ## PROCESSING SWITCHES & OPTIONS ##
